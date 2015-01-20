@@ -35,10 +35,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"
+        android:text="@string/empty_console"
         android:id="@+id/ping_console"
-        android:textColor="#ffffff"
-        android:background="#000000"
+        android:background="#dddddd"
         android:layout_marginTop="24sp"
         android:padding="10sp"/>
 

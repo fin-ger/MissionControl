@@ -2,15 +2,13 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="com.github.fin_ger.missioncontrol.ConsoleFragment">
+             tools:context="com.github.fin_ger.missioncontrol.TrackpadFragment">
 
+    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/empty_console"
-        android:background="#dddddd"
-        android:layout_margin="10dp"
-        android:padding="5dp"
-        android:id="@+id/console"/>
+        android:text="@string/not_implemented_yet"
+        android:gravity="center_vertical|center_horizontal"/>
 
 </FrameLayout>

@@ -15,8 +15,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
-import java.util.LinkedList;
-
 public
 class NavigationPathProgrammerFragment extends Fragment
 {
@@ -53,7 +51,7 @@ class NavigationPathProgrammerFragment extends Fragment
     public
     void onTouchUp (float posX, float posY)
     {
-        System.out.println ("[ UP ] X: " + posX + ", Y: " + posY);
+        //System.out.println ("[ UP ] X: " + posX + ", Y: " + posY);
 
         if (drawPoint)
         {

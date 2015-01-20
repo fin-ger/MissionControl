@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Einstellungen</string>
+    <string name="empty_console">Das ist eine leere Konsole</string>
+    <string name="connection_state">Verbindungsstatus:</string>
+    <string name="disconnected">Getrennt</string>
+    <string name="connected">Verbunden</string>
+    <string name="canvas_content_description">Male den Weg, den der Roboter abfahren soll!</string>
+    <string name="console">Konsole</string>
+    <string name="connection">Verbindung</string>
+    <string name="navigation">Navigation</string>
+    <string name="path_programmer">Pfadprogrammierer</string>
+    <string name="trackpad">Steuerkreuz</string>
+    <string name="about">Über</string>
+    <string name="reset">Zurücksetzen</string>
+    <string name="submit">Übermitteln</string>
+    <string name="not_implemented_yet">Diese Funktion ist noch nicht implementiert!</string>
+    <string name="about_content_description">Startersymbol</string>
+    <string name="about_text">
+        Mission Control \u00a9 Fin Christensen 2015\nDiese App ist unter GPLv2 lizenziert\nAlle Rechte vorbehalten!
+    </string>
+</resources>
