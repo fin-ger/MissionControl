@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Mission Control</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="connection_state">Connection State:</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="connected">Connected</string>
+    <string name="canvas_content_description">Draw the path which the robo should go</string>
+    <string name="console">Console</string>
+    <string name="connection">Connection</string>
+    <string name="navigation">Navigation</string>
+    <string name="path_programmer">Path Programmer</string>
+    <string name="trackpad">Trackpad</string>
+    <string name="about">About</string>
+    <string name="reset">Reset</string>
+    <string name="submit">Submit</string>
+
+</resources>
