@@ -10,7 +10,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:contentDescription="@string/canvas_content_description"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:background="#ffffff"/>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -18,7 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0"
-        android:layout_margin="10sp">
+        android:layout_margin="10dp"
+        >
 
         <Button
             android:layout_width="wrap_content"
