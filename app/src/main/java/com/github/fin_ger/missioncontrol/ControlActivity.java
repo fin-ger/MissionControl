@@ -2,38 +2,40 @@ package com.github.fin_ger.missioncontrol;
 
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.github.fin_ger.missioncontrol.fragments.AboutFragment;
+import com.github.fin_ger.missioncontrol.fragments.ConnectionFragment;
+import com.github.fin_ger.missioncontrol.fragments.ConsoleFragment;
+import com.github.fin_ger.missioncontrol.fragments.NavigationPathProgrammerFragment;
+import com.github.fin_ger.missioncontrol.fragments.TrackpadFragment;
 
 import java.util.LinkedList;
 
 import it.neokree.materialnavigationdrawer.MaterialAccount;
 import it.neokree.materialnavigationdrawer.MaterialAccountListener;
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
-import it.neokree.materialnavigationdrawer.MaterialSection;
 
 public
 class ControlActivity extends MaterialNavigationDrawer implements MaterialAccountListener
 {
     public LinkedList<Point> Points = new LinkedList<> ();
     protected NavigationPathProgrammerFragment pathProgrammer;
-    protected ConnectionFragment connection;
+    protected ConnectionFragment               connection;
 
     @Override
     public
     void init (Bundle savedInstanceState)
     {
         // add first account
-        MaterialAccount account =
-            new MaterialAccount ("Mission Control", "Arduino ATmega 2560",
-                                 this.getResources ().getDrawable ( R.drawable.mission_control_flat),
-                                 this.getResources ().getDrawable (R.drawable.arduino_bg));
+        MaterialAccount account = new MaterialAccount ("Mission Control", "Arduino ATmega 2560", this.getResources ()
+                                                                                                     .getDrawable (
+                                                                                                         R.drawable.mission_control_flat),
+                                                       this.getResources ().getDrawable (R.drawable.arduino_bg));
 
         pathProgrammer = new NavigationPathProgrammerFragment ();
 

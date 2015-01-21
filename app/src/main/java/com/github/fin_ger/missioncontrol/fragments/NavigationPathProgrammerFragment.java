@@ -1,4 +1,4 @@
-package com.github.fin_ger.missioncontrol;
+package com.github.fin_ger.missioncontrol.fragments;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -15,16 +15,19 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
+import com.github.fin_ger.missioncontrol.ControlActivity;
+import com.github.fin_ger.missioncontrol.R;
+
 public
 class NavigationPathProgrammerFragment extends Fragment
 {
-    public    Canvas    Canvas;
-    protected Bitmap    image;
-    protected Paint     paint;
-    protected ImageView imageView;
+    public    Canvas          Canvas;
+    protected Bitmap          image;
+    protected Paint           paint;
+    protected ImageView       imageView;
     protected ControlActivity parent;
-    protected int       sizeX;
-    protected int       sizeY;
+    protected int             sizeX;
+    protected int             sizeY;
 
     public
     NavigationPathProgrammerFragment ()
@@ -44,8 +47,8 @@ class NavigationPathProgrammerFragment extends Fragment
         drawPoint = true;
     }
 
-    protected float lastX = Float.NaN;
-    protected float lastY = Float.NaN;
+    protected float   lastX     = Float.NaN;
+    protected float   lastY     = Float.NaN;
     protected boolean drawPoint = true;
 
     public

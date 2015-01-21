@@ -1,17 +1,21 @@
-package com.github.fin_ger.missioncontrol;
+package com.github.fin_ger.missioncontrol.fragments;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.github.fin_ger.missioncontrol.R;
 
 public
-class TrackpadFragment extends Fragment
+class ConsoleFragment extends Fragment
 {
     public
-    TrackpadFragment ()
+    ConsoleFragment ()
     {
         // Required empty public constructor
     }
@@ -28,7 +32,12 @@ class TrackpadFragment extends Fragment
     View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        return inflater.inflate (R.layout.fragment_trackpad, container, false);
+        View v = inflater.inflate (R.layout.fragment_console, container, false);
+        Typeface monotypeface = Typeface.createFromAsset (getActivity ().getApplicationContext ().getAssets (),
+                                                          "fonts/DejaVuSansMono.ttf");
+        TextView tv = (TextView) v.findViewById (R.id.console);
+        tv.setTypeface (monotypeface);
+        return v;
     }
 
     @Override

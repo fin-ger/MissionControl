@@ -6,7 +6,6 @@
         <item name="actionModeBackground">@color/mission_control</item>
         <item name="colorPrimary">@color/mission_control</item>
         <item name="colorPrimaryDark">@color/mission_control_dark</item>en
-
     </style>
 
 </resources>
