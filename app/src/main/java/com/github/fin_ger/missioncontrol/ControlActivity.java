@@ -6,15 +6,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.fin_ger.missioncontrol.events.OnConnectionStateChanged;
+import com.github.fin_ger.missioncontrol.events.OnDataReceived;
 import com.github.fin_ger.missioncontrol.fragments.AboutFragment;
 import com.github.fin_ger.missioncontrol.fragments.ConnectionFragment;
 import com.github.fin_ger.missioncontrol.fragments.ConsoleFragment;
 import com.github.fin_ger.missioncontrol.fragments.NavigationPathProgrammerFragment;
 import com.github.fin_ger.missioncontrol.fragments.TrackpadFragment;
+import com.github.fin_ger.missioncontrol.interfaces.IArduinoCommunicator;
+import com.github.fin_ger.missioncontrol.interfaces.ICommunicationData;
 
 import java.util.LinkedList;
+import java.util.Vector;
 
 import it.neokree.materialnavigationdrawer.MaterialAccount;
 import it.neokree.materialnavigationdrawer.MaterialAccountListener;
@@ -26,16 +32,19 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
     public LinkedList<Point> Points = new LinkedList<> ();
     protected NavigationPathProgrammerFragment pathProgrammer;
     protected ConnectionFragment               connection;
+    protected IArduinoCommunicator             communicator;
 
     @Override
     public
     void init (Bundle savedInstanceState)
     {
+        communicator = new ConsoleCommunicator ();
+
         // add first account
-        MaterialAccount account = new MaterialAccount ("Mission Control", "Arduino ATmega 2560", this.getResources ()
-                                                                                                     .getDrawable (
-                                                                                                         R.drawable.mission_control_flat),
-                                                       this.getResources ().getDrawable (R.drawable.arduino_bg));
+        MaterialAccount account =
+            new MaterialAccount ("Mission Control", "Arduino ATmega 2560",
+                                 this.getResources ().getDrawable (R.drawable.mission_control_flat),
+                                 this.getResources ().getDrawable (R.drawable.arduino_bg));
 
         pathProgrammer = new NavigationPathProgrammerFragment ();
 
@@ -59,6 +68,36 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
 
         this.allowArrowAnimation ();
         this.setBackPattern (MaterialNavigationDrawer.BACKPATTERN_BACK_ANYWHERE);
+
+        communicator.setOnConnectionChangedListener (new OnConnectionStateChanged ()
+        {
+            @Override
+            public void onConnectionStateChanged (boolean state)
+            {
+                if (state)
+                    connection.connected ();
+                else
+                    connection.disconnected ();
+            }
+        });
+
+        communicator.setOnDataReceivedListener (new OnDataReceived ()
+        {
+            @Override
+            public
+            void onDataReceived (String data)
+            {
+                TextView tv = (TextView) findViewById (R.id.console);
+
+                if (tv == null)
+                    return;
+
+                tv.append (data);
+            }
+        });
+
+        communicator.init ();
+        communicator.enableCommunication ();
     }
 
     public void onResetClicked (View view)
@@ -69,7 +108,34 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
 
     public void onSubmitClicked (View view)
     {
-        //TODO: parse Points to distance and angle
+        DriveCommunicationData data = new DriveCommunicationData ();
+        float aa = Points.get (0).x;
+        float bb = Points.get (0).y;
+        float oa = 0;
+        float ob = 1;
+        float a,b,x,y;
+        short d, p;
+
+        for (int i = 1; i < Points.size (); i++)
+        {
+            x = Points.get (i).x;
+            y = Points.get (i).y;
+            a = x - aa;
+            b = y - bb;
+
+            d = (short) Math.sqrt (a * a + b * b);
+            p = (short) (Math.toDegrees (Math.atan2 (b, a) - Math.atan2 (ob, oa)));
+
+            aa = x;
+            bb = y;
+            oa = a;
+            ob = b;
+
+            data.addActionAngle (p);
+            data.addActionDistanceAngle (d, (short) 0);
+        }
+
+        communicator.write (data);
     }
 
     protected void showSettings ()

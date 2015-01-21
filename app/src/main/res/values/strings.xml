@@ -3,7 +3,7 @@
 
     <string name="app_name">Mission Control</string>
     <string name="action_settings">Settings</string>
-    <string name="empty_console">This is an empty console</string>
+    <string name="empty_console">Console started:</string>
     <string name="connection_state">Connection State:</string>
     <string name="disconnected">Disconnected</string>
     <string name="connected">Connected</string>

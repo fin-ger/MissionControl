@@ -4,7 +4,7 @@ package com.github.fin_ger.missioncontrol.events;
  * Created by fin on 21.01.15.
  */
 public
-interface IConnectionStateListener
+class OnConnectionStateChanged
 {
-    void onConnectionStateChanged (boolean state);
+    public void onConnectionStateChanged (boolean state) {}
 }

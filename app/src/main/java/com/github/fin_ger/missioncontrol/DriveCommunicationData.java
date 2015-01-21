@@ -6,7 +6,7 @@ import com.github.fin_ger.missioncontrol.interfaces.ICommunicationData;
  * Created by fin on 21.01.15.
  */
 public
-class DrivingCommunicationData implements ICommunicationData
+class DriveCommunicationData implements ICommunicationData
 {
     protected String data = "";
 
@@ -17,17 +17,17 @@ class DrivingCommunicationData implements ICommunicationData
         return "#" + data + "%";
     }
 
-    public void addActionAngle (int angle)
+    public void addActionAngle (short angle)
     {
         data += "{" + angle + "}";
     }
 
-    public void addActionSpeedAngle (int speed, int angle)
+    public void addActionSpeedAngle (short speed, short angle)
     {
         data += "(" + speed + "," + angle + ")";
     }
 
-    public void addActionDistanceAngle (int distance, int angle)
+    public void addActionDistanceAngle (short distance, short angle)
     {
         data += "[" + distance + "," + angle + "]";
     }

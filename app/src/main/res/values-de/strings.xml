@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Mission Control</string>
     <string name="action_settings">Einstellungen</string>
-    <string name="empty_console">Das ist eine leere Konsole</string>
+    <string name="empty_console">Konsole gestartet:</string>
     <string name="connection_state">Verbindungsstatus:</string>
     <string name="disconnected">Getrennt</string>
     <string name="connected">Verbunden</string>
