@@ -25,20 +25,23 @@ import java.util.Vector;
 import it.neokree.materialnavigationdrawer.MaterialAccount;
 import it.neokree.materialnavigationdrawer.MaterialAccountListener;
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
+import it.neokree.materialnavigationdrawer.MaterialSection;
+import it.neokree.materialnavigationdrawer.MaterialSectionListener;
 
 public
 class ControlActivity extends MaterialNavigationDrawer implements MaterialAccountListener
 {
     public LinkedList<Point> Points = new LinkedList<> ();
     protected NavigationPathProgrammerFragment pathProgrammer;
-    protected ConnectionFragment               connection;
+    protected MaterialSection                  connection;
+    protected boolean                          connectionState;
     protected IArduinoCommunicator             communicator;
 
     @Override
     public
     void init (Bundle savedInstanceState)
     {
-        communicator = new ConsoleCommunicator ();
+        communicator = new ConsoleCommunicator ();//new TCPCommunicator ();
 
         // add first account
         MaterialAccount account =
@@ -52,32 +55,44 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
 
         this.addSection (this.newSection (this.getString (R.string.console), new ConsoleFragment ()));
 
-        connection = new ConnectionFragment ();
-        connection.section = this.newSection (this.getString (R.string.connection), connection);
-        this.addSection (connection.section);
-        connection.disconnected ();
+        connection = this.newSection (this.getString (R.string.connection), new MaterialSectionListener ()
+        {
+            @Override
+            public
+            void onClick (MaterialSection materialSection)
+            {
+                if (connectionState)
+                    Toast.makeText (getApplicationContext (), getString (R.string.connected),
+                                    Toast.LENGTH_LONG).show ();
+                else
+                    Toast.makeText (getApplicationContext (), getString (R.string.disconnected),
+                                    Toast.LENGTH_LONG).show ();
+            }
+        });
+        this.addSection (connection);
 
         this.addSubheader (this.getString (R.string.navigation));
         this.addSection (this.newSection (this.getString (R.string.path_programmer), R.drawable.ic_path_programmer,
                                           pathProgrammer));
         this.addSection (this.newSection (this.getString (R.string.trackpad), R.drawable.ic_trackpad_navigator,
                                           new TrackpadFragment ()));
-        this.addDivisor ();
         this.addBottomSection (this.newSection (this.getString (R.string.about), R.drawable.ic_about,
                                                 new AboutFragment ()));
 
         this.allowArrowAnimation ();
         this.setBackPattern (MaterialNavigationDrawer.BACKPATTERN_BACK_ANYWHERE);
 
+        connection.setNotificationsText ("\u2717");
         communicator.setOnConnectionChangedListener (new OnConnectionStateChanged ()
         {
             @Override
             public void onConnectionStateChanged (boolean state)
             {
                 if (state)
-                    connection.connected ();
+                    connection.setNotificationsText ("\u2713");
                 else
-                    connection.disconnected ();
+                    connection.setNotificationsText ("\u2717");
+                connectionState = state;
             }
         });
 
@@ -96,7 +111,12 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
             }
         });
 
-        communicator.init ();
+        if (!communicator.init ())
+        {
+            Toast.makeText (getApplicationContext (), getString (R.string.connection_failed),
+                            Toast.LENGTH_LONG).show ();
+            return;
+        }
         communicator.enableCommunication ();
     }
 
@@ -108,11 +128,17 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
 
     public void onSubmitClicked (View view)
     {
+        if (Points.size () <= 0)
+        {
+            Toast.makeText (getApplicationContext (), getString (R.string.no_path), Toast.LENGTH_LONG).show ();
+            return;
+        }
+
         DriveCommunicationData data = new DriveCommunicationData ();
         float aa = Points.get (0).x;
         float bb = Points.get (0).y;
         float oa = 0;
-        float ob = 1;
+        float ob = -1;
         float a,b,x,y;
         short d, p;
 
@@ -130,6 +156,14 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
             bb = y;
             oa = a;
             ob = b;
+
+            while (p < -180)
+                p += 360;
+
+            while (p > 180)
+                p -= 360;
+
+            p += 180;
 
             data.addActionAngle (p);
             data.addActionDistanceAngle (d, (short) 0);

@@ -20,4 +20,6 @@
     <string name="about_text">
         Mission Control \u00a9 Fin Christensen 2015\nDiese App ist unter GPLv2 lizenziert\nAlle Rechte vorbehalten!
     </string>
+    <string name="no_path">Kein Pfad vorhanden! Bitte zeichne vor dem Übermitteln einen Pfad!</string>
+    <string name="connection_failed">Verbindung fehlgeschlagen! Starte die App neu und versuche es erneut</string>
 </resources>

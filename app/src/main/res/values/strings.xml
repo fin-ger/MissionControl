@@ -21,5 +21,7 @@
     <string name="about_text">
         Mission Control \u00a9 Fin Christensen 2015\nThis app is licensed under GPLv2\nAll rights reserved!
     </string>
+    <string name="no_path">No path drawn! Please draw a path to submit!</string>
+    <string name="connection_failed">Connection failed! Restart app and try again</string>
 
 </resources>

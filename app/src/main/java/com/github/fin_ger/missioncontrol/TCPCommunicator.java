@@ -24,7 +24,7 @@ class TCPCommunicator implements IArduinoCommunicator
     public
     TCPCommunicator ()
     {
-        serverIP = "10.100.0.1";
+        serverIP = "172.16.225.19";//"10.100.0.1";
         serverPort = 2000;
         run = false;
         lastConnectionState = false;
