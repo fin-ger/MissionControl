@@ -11,7 +11,6 @@ import com.github.fin_ger.missioncontrol.interfaces.ICommunicationData;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -121,43 +120,58 @@ class TCPCommunicator implements IArduinoCommunicator
 
                     handler = new Handler ();
 
-                    asyncRun = new Runnable ()
-                    {
-                        @Override
-                        public
-                        void run ()
-                        {
-                            try
-                            {
-                                serverData = tcpReader.readLine ();
-                            }
-                            catch (Exception e)
-                            {}
-                        }
-                    };
-
                     runnable = new Runnable ()
                     {
                         @Override
                         public
                         void run ()
                         {
-                            AsyncTask.execute (asyncRun);
+                            new AsyncTask<Void, Void, Void> ()
+                            {
+                                String data;
 
-                            if (serverData != null && dataListener != null)
-                                dataListener.onDataReceived (serverData);
-
-                            serverData = null;
-
-                            if (run)
-                                handler.postDelayed (this, 250);
-                            else
-                                try
+                                @Override
+                                protected
+                                Void doInBackground (Void... params)
                                 {
-                                    socket.close ();
+                                    try
+                                    {
+                                        while (tcpReader.ready ())
+                                        {
+                                            data = tcpReader.readLine ();
+
+                                            if (serverData == null)
+                                                serverData = data + "\n";
+                                            else
+                                                serverData += data + "\n";
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {}
+
+                                    return null;
                                 }
-                                catch (Exception e)
-                                {}
+
+                                @Override
+                                protected
+                                void onPostExecute (Void param)
+                                {
+                                    if (serverData != null && dataListener != null)
+                                        dataListener.onDataReceived (serverData);
+
+                                    serverData = null;
+
+                                    if (run)
+                                        handler.postDelayed (runnable, 250);
+                                    else
+                                        try
+                                        {
+                                            socket.close ();
+                                        }
+                                        catch (Exception e)
+                                        {}
+                                }
+                            }.execute ();
                         }
                     };
 
@@ -241,7 +255,6 @@ class TCPCommunicator implements IArduinoCommunicator
     protected boolean                     run;
     protected String                      serverData;
     protected Runnable                    runnable;
-    protected Runnable                    asyncRun;
     protected Handler                     handler;
     protected Runnable                    connectionRunnable;
     protected Handler                     connectionHandler;

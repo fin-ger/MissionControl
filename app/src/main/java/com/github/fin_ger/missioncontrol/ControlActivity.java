@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,15 +15,12 @@ import com.github.fin_ger.missioncontrol.events.OnDataReceived;
 import com.github.fin_ger.missioncontrol.events.OnReset;
 import com.github.fin_ger.missioncontrol.events.OnStatusMessage;
 import com.github.fin_ger.missioncontrol.fragments.AboutFragment;
-import com.github.fin_ger.missioncontrol.fragments.ConnectionFragment;
 import com.github.fin_ger.missioncontrol.fragments.ConsoleFragment;
 import com.github.fin_ger.missioncontrol.fragments.NavigationPathProgrammerFragment;
 import com.github.fin_ger.missioncontrol.fragments.TrackpadFragment;
 import com.github.fin_ger.missioncontrol.interfaces.IArduinoCommunicator;
-import com.github.fin_ger.missioncontrol.interfaces.ICommunicationData;
 
 import java.util.LinkedList;
-import java.util.Vector;
 
 import it.neokree.materialnavigationdrawer.MaterialAccount;
 import it.neokree.materialnavigationdrawer.MaterialAccountListener;
@@ -92,12 +90,22 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
         this.addSection (connection);
 
         this.addSubheader (this.getString (R.string.navigation));
-        this.addSection (this.newSection (this.getString (R.string.path_programmer), R.drawable.ic_path_programmer,
-                                          pathProgrammer));
-        this.addSection (this.newSection (this.getString (R.string.trackpad), R.drawable.ic_trackpad_navigator,
-                                          new TrackpadFragment ()));
-        this.addBottomSection (this.newSection (this.getString (R.string.about), R.drawable.ic_about,
-                                                new AboutFragment ()));
+
+        this.addSection (
+            this.newSection (this.getString (R.string.path_programmer), R.drawable.ic_path_programmer, pathProgrammer)
+                .setSectionColor (getResources ().getColor (R.color.mission_control),
+                                  getResources ().getColor (R.color.mission_control_dark)));
+
+        this.addSection (
+            this.newSection (this.getString (R.string.trackpad), R.drawable.ic_trackpad_navigator,
+                             new TrackpadFragment ())
+                .setSectionColor (getResources ().getColor (R.color.mission_control),
+                                  getResources ().getColor (R.color.mission_control_dark)));
+
+        this.addBottomSection (
+            this.newSection (this.getString (R.string.about), R.drawable.ic_about, new AboutFragment ())
+                .setSectionColor (getResources ().getColor (R.color.mission_control),
+                                  getResources ().getColor (R.color.mission_control_dark)));
 
         this.allowArrowAnimation ();
         this.setBackPattern (MaterialNavigationDrawer.BACKPATTERN_BACK_ANYWHERE);
@@ -132,13 +140,13 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
             public
             void onDataReceived (String data)
             {
-                consoleText += data + "\n";
+                consoleText += data;
                 TextView tv = (TextView) findViewById (R.id.console);
 
                 if (tv == null)
                     return;
 
-                tv.append (data + "\n");
+                tv.append (data);
             }
         });
 

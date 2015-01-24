@@ -4,13 +4,19 @@
              android:layout_height="match_parent"
              tools:context="com.github.fin_ger.missioncontrol.fragments.ConsoleFragment">
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/empty_console"
-        android:background="#dddddd"
-        android:layout_margin="10dp"
-        android:padding="5dp"
-        android:id="@+id/console"/>
+        android:id="@+id/console_scroll"
+        android:layout_margin="16dp"
+        android:background="#dddddd">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/empty_console"
+            android:padding="5dp"
+            android:id="@+id/console"/>
+    </ScrollView>
 
 </FrameLayout>
