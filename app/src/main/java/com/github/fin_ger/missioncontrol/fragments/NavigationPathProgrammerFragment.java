@@ -17,6 +17,7 @@ import android.widget.ImageView;
 
 import com.github.fin_ger.missioncontrol.ControlActivity;
 import com.github.fin_ger.missioncontrol.R;
+import com.github.fin_ger.missioncontrol.events.OnReset;
 
 public
 class NavigationPathProgrammerFragment extends Fragment
@@ -28,6 +29,7 @@ class NavigationPathProgrammerFragment extends Fragment
     protected ControlActivity parent;
     protected int             sizeX;
     protected int             sizeY;
+    protected OnReset         onResetListener;
 
     public
     NavigationPathProgrammerFragment ()
@@ -45,6 +47,9 @@ class NavigationPathProgrammerFragment extends Fragment
         Canvas = new Canvas (image);
         imageView.setImageBitmap (image);
         drawPoint = true;
+
+        if (onResetListener != null)
+            onResetListener.onReset ();
     }
 
     protected float   lastX     = Float.NaN;
@@ -54,15 +59,11 @@ class NavigationPathProgrammerFragment extends Fragment
     public
     void onTouchUp (float posX, float posY)
     {
-        //System.out.println ("[ UP ] X: " + posX + ", Y: " + posY);
-
         if (drawPoint)
         {
             drawPoint = false;
             Canvas.drawPoint (posX, posY, paint);
-        }
-        else
-            Canvas.drawLine (lastX, lastY, posX, posY, paint);
+        } else Canvas.drawLine (lastX, lastY, posX, posY, paint);
 
         parent.Points.add (new Point ((int) posX, (int) posY));
 
@@ -83,6 +84,9 @@ class NavigationPathProgrammerFragment extends Fragment
     public
     View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        if (onResetListener != null)
+            onResetListener.onReset ();
+
         parent = (ControlActivity) (this.getActivity ());
 
         // Inflate the layout for this fragment
@@ -131,5 +135,11 @@ class NavigationPathProgrammerFragment extends Fragment
     void onDetach ()
     {
         super.onDetach ();
+    }
+
+    public
+    void setOnResetListener (OnReset listener)
+    {
+        onResetListener = listener;
     }
 }

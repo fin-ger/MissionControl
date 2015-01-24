@@ -6,5 +6,7 @@ package com.github.fin_ger.missioncontrol.events;
 public
 class OnConnectionStateChanged
 {
-    public void onConnectionStateChanged (boolean state) {}
+    public
+    void onConnectionStateChanged (boolean state)
+    {}
 }

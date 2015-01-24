@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.github.fin_ger.missioncontrol.events.OnConnectionStateChanged;
 import com.github.fin_ger.missioncontrol.events.OnDataReceived;
+import com.github.fin_ger.missioncontrol.events.OnReset;
+import com.github.fin_ger.missioncontrol.events.OnStatusMessage;
 import com.github.fin_ger.missioncontrol.fragments.AboutFragment;
 import com.github.fin_ger.missioncontrol.fragments.ConnectionFragment;
 import com.github.fin_ger.missioncontrol.fragments.ConsoleFragment;
@@ -36,12 +38,15 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
     protected MaterialSection                  connection;
     protected boolean                          connectionState;
     protected IArduinoCommunicator             communicator;
+    protected String                           consoleText;
 
     @Override
     public
     void init (Bundle savedInstanceState)
     {
-        communicator = new ConsoleCommunicator ();//new TCPCommunicator ();
+        consoleText = "";
+        communicator = new TCPCommunicator ();
+        //communicator = new ConsoleCommunicator ();
 
         // add first account
         MaterialAccount account =
@@ -50,6 +55,15 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
                                  this.getResources ().getDrawable (R.drawable.arduino_bg));
 
         pathProgrammer = new NavigationPathProgrammerFragment ();
+        pathProgrammer.setOnResetListener (new OnReset ()
+        {
+            @Override
+            public
+            void onReset ()
+            {
+                Points.clear ();
+            }
+        });
 
         this.addAccount (account);
 
@@ -62,11 +76,17 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
             void onClick (MaterialSection materialSection)
             {
                 if (connectionState)
-                    Toast.makeText (getApplicationContext (), getString (R.string.connected),
-                                    Toast.LENGTH_LONG).show ();
+                {
+                    Toast.makeText (getApplicationContext (), getString (R.string.closing_connection),
+                                    Toast.LENGTH_SHORT).show ();
+                    communicator.disableCommunication ();
+                }
                 else
-                    Toast.makeText (getApplicationContext (), getString (R.string.disconnected),
-                                    Toast.LENGTH_LONG).show ();
+                {
+                    Toast.makeText (getApplicationContext (), getString (R.string.connecting), Toast.LENGTH_SHORT)
+                         .show ();
+                    communicator.enableCommunication ();
+                }
             }
         });
         this.addSection (connection);
@@ -83,15 +103,25 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
         this.setBackPattern (MaterialNavigationDrawer.BACKPATTERN_BACK_ANYWHERE);
 
         connection.setNotificationsText ("\u2717");
+
         communicator.setOnConnectionChangedListener (new OnConnectionStateChanged ()
         {
             @Override
-            public void onConnectionStateChanged (boolean state)
+            public
+            void onConnectionStateChanged (boolean state)
             {
                 if (state)
+                {
                     connection.setNotificationsText ("\u2713");
+                    Toast.makeText (getApplicationContext (), getString (R.string.connected), Toast.LENGTH_SHORT)
+                         .show ();
+                }
                 else
+                {
                     connection.setNotificationsText ("\u2717");
+                    Toast.makeText (getApplicationContext (), getString (R.string.disconnected), Toast.LENGTH_SHORT)
+                         .show ();
+                }
                 connectionState = state;
             }
         });
@@ -102,28 +132,34 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
             public
             void onDataReceived (String data)
             {
+                consoleText += data + "\n";
                 TextView tv = (TextView) findViewById (R.id.console);
 
                 if (tv == null)
                     return;
 
-                tv.append (data);
+                tv.append (data + "\n");
             }
         });
 
-        if (!communicator.init ())
+        communicator.setOnStatusMessageListener (new OnStatusMessage ()
         {
-            Toast.makeText (getApplicationContext (), getString (R.string.connection_failed),
-                            Toast.LENGTH_LONG).show ();
-            return;
-        }
+            @Override
+            public
+            void onStatusMessage (String statusMessage, boolean status)
+            {
+                if (!status)
+                    Toast.makeText (getApplicationContext (), getString (R.string.connection_failed) + " " +
+                                    statusMessage, Toast.LENGTH_LONG).show ();
+            }
+        });
+
         communicator.enableCommunication ();
     }
 
     public void onResetClicked (View view)
     {
         pathProgrammer.reset ();
-        Points.clear ();
     }
 
     public void onSubmitClicked (View view)
@@ -175,6 +211,11 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
     protected void showSettings ()
     {
         Toast.makeText (getApplicationContext (), getString (R.string.not_implemented_yet), Toast.LENGTH_LONG).show ();
+    }
+
+    public String getConsoleText ()
+    {
+        return consoleText;
     }
 
     @Override

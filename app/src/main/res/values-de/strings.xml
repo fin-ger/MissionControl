@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Mission Control</string>
     <string name="action_settings">Einstellungen</string>
-    <string name="empty_console">Konsole gestartet:</string>
+    <string name="empty_console">Konsole gestartet:\n</string>
     <string name="connection_state">Verbindungsstatus:</string>
     <string name="disconnected">Getrennt</string>
     <string name="connected">Verbunden</string>
@@ -21,5 +21,7 @@
         Mission Control \u00a9 Fin Christensen 2015\nDiese App ist unter GPLv2 lizenziert\nAlle Rechte vorbehalten!
     </string>
     <string name="no_path">Kein Pfad vorhanden! Bitte zeichne vor dem Übermitteln einen Pfad!</string>
-    <string name="connection_failed">Verbindung fehlgeschlagen! Starte die App neu und versuche es erneut</string>
+    <string name="connection_failed">Verbindung fehlgeschlagen!\nGrund:</string>
+    <string name="closing_connection">Schließe Verbindung ...</string>
+    <string name="connecting">Verbinde ...</string>
 </resources>

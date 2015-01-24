@@ -4,6 +4,7 @@ import android.os.Handler;
 
 import com.github.fin_ger.missioncontrol.events.OnConnectionStateChanged;
 import com.github.fin_ger.missioncontrol.events.OnDataReceived;
+import com.github.fin_ger.missioncontrol.events.OnStatusMessage;
 import com.github.fin_ger.missioncontrol.interfaces.IArduinoCommunicator;
 import com.github.fin_ger.missioncontrol.interfaces.ICommunicationData;
 
@@ -19,6 +20,7 @@ class ConsoleCommunicator implements IArduinoCommunicator
     public
     ConsoleCommunicator ()
     {
+        super ();
         run = false;
     }
 
@@ -26,14 +28,21 @@ class ConsoleCommunicator implements IArduinoCommunicator
     public
     void setOnConnectionChangedListener (OnConnectionStateChanged listener)
     {
-        listener.onConnectionStateChanged (true);
+        connectionStateChangedListener = listener;
     }
 
     @Override
     public
     void setOnDataReceivedListener (OnDataReceived listener)
     {
-        inputDataListener = listener;
+        dataListener = listener;
+    }
+
+    @Override
+    public
+    void setOnStatusMessageListener (OnStatusMessage listener)
+    {
+        statusMessageListener = listener;
     }
 
     @Override
@@ -55,7 +64,8 @@ class ConsoleCommunicator implements IArduinoCommunicator
     void enableCommunication ()
     {
         run = true;
-        run ();
+        init ();
+        connectionStateChangedListener.onConnectionStateChanged (true);
     }
 
     @Override
@@ -63,11 +73,11 @@ class ConsoleCommunicator implements IArduinoCommunicator
     void disableCommunication ()
     {
         run = false;
+        connectionStateChangedListener.onConnectionStateChanged (false);
     }
 
-    @Override
-    public
-    boolean init ()
+    protected
+    void init ()
     {
         stdin = new BufferedReader (new InputStreamReader (System.in));
 
@@ -84,12 +94,10 @@ class ConsoleCommunicator implements IArduinoCommunicator
                     inputData = stdin.readLine ();
                 }
                 catch (Exception e)
-                {
-                    e.printStackTrace ();
-                }
+                {}
 
-                if (inputData != null && inputDataListener != null)
-                    inputDataListener.onDataReceived (inputData);
+                if (inputData != null && dataListener != null)
+                    dataListener.onDataReceived (inputData);
 
                 inputData = null;
 
@@ -99,8 +107,6 @@ class ConsoleCommunicator implements IArduinoCommunicator
         };
 
         run ();
-
-        return true;
     }
 
     protected void run ()
@@ -108,10 +114,12 @@ class ConsoleCommunicator implements IArduinoCommunicator
         handler.post (runnable);
     }
 
-    protected boolean        run;
-    protected BufferedReader stdin;
-    protected String         inputData;
-    protected Handler        handler;
-    protected Runnable       runnable;
-    protected OnDataReceived inputDataListener;
+    protected boolean                  run;
+    protected BufferedReader           stdin;
+    protected String                   inputData;
+    protected Handler                  handler;
+    protected Runnable                 runnable;
+    protected OnDataReceived           dataListener;
+    protected OnConnectionStateChanged connectionStateChangedListener;
+    protected OnStatusMessage          statusMessageListener;
 }

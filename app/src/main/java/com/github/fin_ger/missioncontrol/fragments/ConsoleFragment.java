@@ -9,17 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.fin_ger.missioncontrol.ControlActivity;
 import com.github.fin_ger.missioncontrol.R;
+
+import java.util.ResourceBundle;
 
 public
 class ConsoleFragment extends Fragment
 {
-    public
-    ConsoleFragment ()
-    {
-        // Required empty public constructor
-    }
-
     @Override
     public
     void onCreate (Bundle savedInstanceState)
@@ -37,6 +34,10 @@ class ConsoleFragment extends Fragment
                                                           "fonts/DejaVuSansMono.ttf");
         TextView tv = (TextView) v.findViewById (R.id.console);
         tv.setTypeface (monotypeface);
+
+        if (getActivity () instanceof ControlActivity)
+            tv.append (((ControlActivity) getActivity ()).getConsoleText ());
+
         return v;
     }
 

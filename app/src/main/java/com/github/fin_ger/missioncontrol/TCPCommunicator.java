@@ -1,14 +1,17 @@
 package com.github.fin_ger.missioncontrol;
 
+import android.os.AsyncTask;
 import android.os.Handler;
 
 import com.github.fin_ger.missioncontrol.events.OnConnectionStateChanged;
 import com.github.fin_ger.missioncontrol.events.OnDataReceived;
+import com.github.fin_ger.missioncontrol.events.OnStatusMessage;
 import com.github.fin_ger.missioncontrol.interfaces.IArduinoCommunicator;
 import com.github.fin_ger.missioncontrol.interfaces.ICommunicationData;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -24,10 +27,12 @@ class TCPCommunicator implements IArduinoCommunicator
     public
     TCPCommunicator ()
     {
-        serverIP = "172.16.225.19";//"10.100.0.1";
+        super ();
+        serverIP = "10.3.70.246";//"10.100.0.1";
         serverPort = 2000;
         run = false;
         lastConnectionState = false;
+        statusMsg = "";
     }
 
     @Override
@@ -41,7 +46,14 @@ class TCPCommunicator implements IArduinoCommunicator
     public
     void setOnDataReceivedListener (OnDataReceived listener)
     {
-        inputDataListener = listener;
+        dataListener = listener;
+    }
+
+    @Override
+    public
+    void setOnStatusMessageListener (OnStatusMessage listener)
+    {
+        statusMessageListener = listener;
     }
 
     @Override
@@ -67,7 +79,123 @@ class TCPCommunicator implements IArduinoCommunicator
     void enableCommunication ()
     {
         run = true;
-        run ();
+
+        asyncTask = new AsyncTask<Void, Void, Void> ()
+        {
+            @Override
+            protected
+            Void doInBackground (Void... params)
+            {
+                try
+                {
+                    InetAddress serverAddr = InetAddress.getByName (serverIP);
+
+                    socket = new Socket (serverAddr, serverPort);
+                }
+                catch (Exception e)
+                {
+                    statusMsg = e.getLocalizedMessage ();
+                    initStatus = false;
+                    return null;
+                }
+
+                initStatus = true;
+                return null;
+            }
+
+            @Override
+            protected
+            void onPostExecute (Void param)
+            {
+                if (!initStatus)
+                {
+                    statusMessageListener.onStatusMessage (statusMsg, initStatus);
+                    return;
+                }
+
+                try
+                {
+                    tcpWriter = new PrintWriter (new BufferedWriter (new OutputStreamWriter (socket.getOutputStream ())),
+                                                 true);
+                    tcpReader = new BufferedReader (new InputStreamReader (socket.getInputStream ()));
+
+                    handler = new Handler ();
+
+                    asyncRun = new Runnable ()
+                    {
+                        @Override
+                        public
+                        void run ()
+                        {
+                            try
+                            {
+                                serverData = tcpReader.readLine ();
+                            }
+                            catch (Exception e)
+                            {}
+                        }
+                    };
+
+                    runnable = new Runnable ()
+                    {
+                        @Override
+                        public
+                        void run ()
+                        {
+                            AsyncTask.execute (asyncRun);
+
+                            if (serverData != null && dataListener != null)
+                                dataListener.onDataReceived (serverData);
+
+                            serverData = null;
+
+                            if (run)
+                                handler.postDelayed (this, 250);
+                            else
+                                try
+                                {
+                                    socket.close ();
+                                }
+                                catch (Exception e)
+                                {}
+                        }
+                    };
+
+                    run ();
+                }
+                catch (Exception e)
+                {
+                    initStatus = false;
+                    statusMsg = e.getLocalizedMessage ();
+                    return;
+                }
+
+                connectionHandler = new Handler ();
+                connectionRunnable = new Runnable ()
+                {
+                    @Override
+                    public
+                    void run ()
+                    {
+                        boolean connection = socket.isConnected () && !socket.isClosed ();
+                        if (connection != lastConnectionState)
+                        {
+                            connectionStateListener.onConnectionStateChanged (connection);
+                            lastConnectionState = connection;
+                        }
+                        if (!socket.isClosed ())
+                            connectionHandler.postDelayed (connectionRunnable, 5000);
+                    }
+                };
+
+                connectionHandler.post (connectionRunnable);
+
+                if (!initStatus)
+                    statusMessageListener.onStatusMessage (statusMsg, initStatus);
+            }
+        };
+
+        asyncTask.execute ();
     }
 
     @Override
@@ -75,89 +203,6 @@ class TCPCommunicator implements IArduinoCommunicator
     void disableCommunication ()
     {
         run = false;
-    }
-
-    @Override
-    public
-    boolean init ()
-    {
-        try
-        {
-            InetAddress serverAddr = InetAddress.getByName (this.serverIP);
-
-            final Socket socket = new Socket (serverAddr, serverPort);
-
-            try
-            {
-                tcpWriter = new PrintWriter (new BufferedWriter (new OutputStreamWriter (socket.getOutputStream ())),
-                                             true);
-
-                tcpReader = new BufferedReader (new InputStreamReader (socket.getInputStream ()));
-
-                handler = new Handler ();
-
-                runnable = new Runnable ()
-                {
-                    @Override
-                    public
-                    void run ()
-                    {
-                        try
-                        {
-                            serverData = tcpReader.readLine ();
-                        }
-                        catch (Exception e)
-                        {}
-
-                        if (serverData != null && inputDataListener != null)
-                            inputDataListener.onDataReceived (serverData);
-
-                        serverData = null;
-
-                        if (run)
-                            handler.postDelayed (this, 250);
-                        else
-                            try
-                            {
-                                socket.close ();
-                            }
-                            catch (Exception e)
-                            {}
-                    }
-                };
-
-                run ();
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-
-            connectionHandler = new Handler ();
-            connectionRunnable = new Runnable ()
-            {
-                @Override
-                public
-                void run ()
-                {
-                    boolean connection = socket.isConnected ();
-                    if (connection != lastConnectionState)
-                    {
-                        connectionStateListener.onConnectionStateChanged (connection);
-                        lastConnectionState = connection;
-                    }
-                    connectionHandler.postDelayed (connectionRunnable, 5000);
-                }
-            };
-
-            connectionHandler.post (connectionRunnable);
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-
-        return true;
     }
 
     public void setServerIP (String ip)
@@ -185,17 +230,23 @@ class TCPCommunicator implements IArduinoCommunicator
         handler.post (runnable);
     }
 
-    protected OnConnectionStateChanged connectionStateListener;
-    protected OnDataReceived           inputDataListener;
-    protected String                   serverIP;
-    protected int                      serverPort;
-    protected PrintWriter              tcpWriter;
-    protected BufferedReader           tcpReader;
-    protected boolean                  run;
-    protected String                   serverData;
-    protected Runnable                 runnable;
-    protected Handler                  handler;
-    protected Runnable                 connectionRunnable;
-    protected Handler                  connectionHandler;
-    protected boolean                  lastConnectionState;
+    protected OnConnectionStateChanged    connectionStateListener;
+    protected OnDataReceived              dataListener;
+    protected OnStatusMessage             statusMessageListener;
+    protected String                      serverIP;
+    protected int                         serverPort;
+    protected Socket                      socket;
+    protected PrintWriter                 tcpWriter;
+    protected BufferedReader              tcpReader;
+    protected boolean                     run;
+    protected String                      serverData;
+    protected Runnable                    runnable;
+    protected Runnable                    asyncRun;
+    protected Handler                     handler;
+    protected Runnable                    connectionRunnable;
+    protected Handler                     connectionHandler;
+    protected boolean                     lastConnectionState;
+    protected String                      statusMsg;
+    protected boolean                     initStatus;
+    protected AsyncTask<Void, Void, Void> asyncTask;
 }
