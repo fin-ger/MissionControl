@@ -65,7 +65,7 @@ class NavigationPathProgrammerFragment extends Fragment
             Canvas.drawPoint (posX, posY, paint);
         } else Canvas.drawLine (lastX, lastY, posX, posY, paint);
 
-        parent.Points.add (new Point ((int) posX, (int) posY));
+        parent.Points.add (new Point ((int) (posX / 3), (int) (posY / 3)));
 
         lastX = posX;
         lastY = posY;

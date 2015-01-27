@@ -170,6 +170,11 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
         pathProgrammer.reset ();
     }
 
+    public void toggleAirplane (View view)
+    {
+        communicator.writeRaw ("§");
+    }
+
     public void onSubmitClicked (View view)
     {
         if (Points.size () <= 0)
