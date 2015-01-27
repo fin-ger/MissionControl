@@ -27,8 +27,6 @@ class TCPCommunicator implements IArduinoCommunicator
     TCPCommunicator ()
     {
         super ();
-        serverIP = "192.168.43.101";//"10.130.1.10";
-        serverPort = 2000;
         run = false;
         lastConnectionState = false;
         statusMsg = "";
@@ -247,8 +245,6 @@ class TCPCommunicator implements IArduinoCommunicator
     protected OnConnectionStateChanged    connectionStateListener;
     protected OnDataReceived              dataListener;
     protected OnStatusMessage             statusMessageListener;
-    protected String                      serverIP;
-    protected int                         serverPort;
     protected Socket                      socket;
     protected PrintWriter                 tcpWriter;
     protected BufferedReader              tcpReader;
@@ -262,4 +258,7 @@ class TCPCommunicator implements IArduinoCommunicator
     protected String                      statusMsg;
     protected boolean                     initStatus;
     protected AsyncTask<Void, Void, Void> asyncTask;
+
+    public String serverIP;
+    public int    serverPort;
 }

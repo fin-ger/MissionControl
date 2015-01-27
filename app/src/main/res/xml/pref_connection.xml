@@ -1,0 +1,13 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference android:title="@string/pref_title_ip_address"
+                        android:key="pref_ip_address"
+                        android:defaultValue="192.168.43.101"
+                        android:summary="@string/pref_description_ip_address" />
+
+    <EditTextPreference android:title="@string/pref_title_port"
+                        android:key="pref_port"
+                        android:defaultValue="2000"
+                        android:summary="@string/pref_description_port" />
+
+</PreferenceScreen>

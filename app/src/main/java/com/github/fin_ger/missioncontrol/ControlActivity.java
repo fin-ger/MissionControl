@@ -1,7 +1,10 @@
 package com.github.fin_ger.missioncontrol;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -123,8 +126,7 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
                     connection.setNotificationsText ("\u2713");
                     Toast.makeText (getApplicationContext (), getString (R.string.connected), Toast.LENGTH_SHORT)
                          .show ();
-                }
-                else
+                } else
                 {
                     connection.setNotificationsText ("\u2717");
                     Toast.makeText (getApplicationContext (), getString (R.string.disconnected), Toast.LENGTH_SHORT)
@@ -143,8 +145,7 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
                 consoleText += data;
                 TextView tv = (TextView) findViewById (R.id.console);
 
-                if (tv == null)
-                    return;
+                if (tv == null) return;
 
                 tv.append (data);
             }
@@ -156,13 +157,32 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
             public
             void onStatusMessage (String statusMessage, boolean status)
             {
-                if (!status)
-                    Toast.makeText (getApplicationContext (), getString (R.string.connection_failed) + " " +
-                                    statusMessage, Toast.LENGTH_LONG).show ();
+                if (!status) Toast.makeText (getApplicationContext (), getString (R.string.connection_failed) + " " +
+                                                                       statusMessage, Toast.LENGTH_LONG).show ();
             }
         });
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences (getApplicationContext ());
+
+        TCPCommunicator c = (TCPCommunicator) communicator;
+
+        System.out.println (prefs.getString ("pref_port", "2000"));
+
+        c.serverIP = prefs.getString ("pref_ip_address","192.168.43.101");
+
+        try
+        {
+            c.serverPort = Integer.parseInt (prefs.getString ("pref_port", "2000"));
+        }
+        catch (Exception e)
+        {
+            c.serverPort = 2000;
+        }
+
         communicator.enableCommunication ();
+
+        if (!prefs.getBoolean ("show_navigation_drawer_checkbox", true))
+            this.disableLearningPattern ();
     }
 
     public void onResetClicked (View view)
@@ -223,7 +243,8 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
 
     protected void showSettings ()
     {
-        Toast.makeText (getApplicationContext (), getString (R.string.not_implemented_yet), Toast.LENGTH_LONG).show ();
+        Intent settings = new Intent (this, SettingsActivity.class);
+        startActivity (settings);
     }
 
     public String getConsoleText ()

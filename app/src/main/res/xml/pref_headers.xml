@@ -1,0 +1,11 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <header
+        android:fragment="com.github.fin_ger.missioncontrol.SettingsActivity$GeneralPreferenceFragment"
+        android:title="@string/pref_header_general"/>
+
+    <header
+        android:fragment="com.github.fin_ger.missioncontrol.SettingsActivity$ConnectionPreferenceFragment"
+        android:title="@string/pref_header_connection"/>
+
+</preference-headers>
