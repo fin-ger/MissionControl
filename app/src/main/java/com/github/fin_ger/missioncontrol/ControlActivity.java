@@ -168,15 +168,15 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
 
         System.out.println (prefs.getString ("pref_port", "2000"));
 
-        c.serverIP = prefs.getString ("pref_ip_address","192.168.43.101");
+        c.setServerIP (prefs.getString ("pref_ip_address","192.168.43.101"));
 
         try
         {
-            c.serverPort = Integer.parseInt (prefs.getString ("pref_port", "2000"));
+            c.setServerPort (Integer.parseInt (prefs.getString ("pref_port", "2000")));
         }
         catch (Exception e)
         {
-            c.serverPort = 2000;
+            c.setServerPort (2000);
         }
 
         communicator.enableCommunication ();
@@ -192,7 +192,12 @@ class ControlActivity extends MaterialNavigationDrawer implements MaterialAccoun
 
     public void toggleAirplane (View view)
     {
-        communicator.writeRaw ("§");
+        communicator.writeRaw ("#&%");
+    }
+
+    public void toggleFan (View view)
+    {
+        communicator.writeRaw ("#?%");
     }
 
     public void onSubmitClicked (View view)

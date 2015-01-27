@@ -258,7 +258,6 @@ class TCPCommunicator implements IArduinoCommunicator
     protected String                      statusMsg;
     protected boolean                     initStatus;
     protected AsyncTask<Void, Void, Void> asyncTask;
-
-    public String serverIP;
-    public int    serverPort;
+    protected String                      serverIP;
+    protected int                         serverPort;
 }

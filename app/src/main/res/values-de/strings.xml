@@ -13,8 +13,8 @@
     <string name="path_programmer">Pfadprogrammierer</string>
     <string name="trackpad">Steuerkreuz</string>
     <string name="about">Über</string>
-    <string name="reset">Zurücksetzen</string>
-    <string name="submit">Übermitteln</string>
+    <string name="reset">Löschen</string>
+    <string name="submit">Los</string>
     <string name="not_implemented_yet">Diese Funktion ist noch nicht implementiert!</string>
     <string name="about_content_description">Startersymbol</string>
     <string name="about_text">

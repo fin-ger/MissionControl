@@ -48,6 +48,4 @@ class SettingsActivity extends PreferenceActivity
         getPreferenceScreen ().addPreference (fakeHeader);
         addPreferencesFromResource (R.xml.pref_connection);
     }
-
-
 }

@@ -36,6 +36,14 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:id="@+id/btn_fan"
+            android:layout_weight="0"
+            android:src="@drawable/ic_clock"
+            android:onClick="toggleFan"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/btn_airplane"
             android:src="@drawable/ic_airplane"
             android:adjustViewBounds="true"

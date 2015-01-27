@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_settings">Einstellungen</string>
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">Allgemein</string>
+
+    <string name="pref_title_show_navigation_drawer">Seitenleiste</string>
+    <string name="pref_description_show_navigation_drawer">
+        Soll die Seitenleiste beim Start der App angezeigt werden?
+    </string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_connection">Verbindung</string>
+
+    <string name="pref_title_ip_address">IP Adresse</string>
+    <string name="pref_description_ip_address">Die IP Adresse, mit der verbunden werden soll</string>
+
+    <string name="pref_title_port">Port</string>
+    <string name="pref_description_port">Der Port, auf dem verbunden werden soll</string>
+</resources>
